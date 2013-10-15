@@ -1,38 +1,23 @@
 #include "Scene.hpp"
 
-/* Standard C */
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
 /* SDL and OpenGL */
 #include <GL/glu.h>
-#include <GL/glext.h>
 #include <GL/glx.h>
-#include <GL/glxext.h>
 
-/* Unix */
-//#include <math.h>
-#include <time.h>
-#include <unistd.h>
+#include <math.h>
+
+void Scene::abort (std::string message) {
+    fprintf(stderr, "%s [%s]\n", message.c_str(), SDL_GetError());
+    exit(1);
+}
 
 void Scene::initialize () {
-    putenv((char*) "SDL_VIDEO_CENTERED=1");
-
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        fprintf(stderr, "Failed to initialize SDL Video!\n");
-        exit(1);
+        abort("Failed to initialize SDL Video!\n");
     }
 
     // tell system which funciton to process when exit() call is made
     atexit(SDL_Quit);
-
-    // get optimal video settings
-    const SDL_VideoInfo* vidinfo = SDL_GetVideoInfo();
-    if (!vidinfo) {
-        fprintf(stderr, "Coudn't get video information! [%s]\n", SDL_GetError());
-        exit(1);
-    }
 
     // set opengl attributes
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE,     8);
@@ -42,14 +27,7 @@ void Scene::initialize () {
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,   24);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    // get a framebuffer
-    SDL_Surface* gDrawSurface = SDL_SetVideoMode(
-        100, 100, vidinfo->vfmt->BitsPerPixel, SDL_OPENGL);
-
-    if (!gDrawSurface) {
-        fprintf(stderr, "Couldn't set video mode! [%s]\n", SDL_GetError());
-        exit(1);
-    }
+    resize(_width, _height);
 
     onInitialize();
 }
@@ -57,14 +35,14 @@ void Scene::initialize () {
 int Scene::run () {
     initialize();
 
-    while (!stopped) {
+    while (!_stopped) {
         update(1.0f / 60.0f);
         draw();
 
-        usleep(1000000 / 60);
+        //usleep(1000000 / 60);
     }
 
-    return exitCode;
+    return _exitCode;
 }
 
 void Scene::quit () {
@@ -74,9 +52,9 @@ void Scene::quit () {
 }
 
 void Scene::stop (int code) {
-    if (!stopped) {
-        stopped = true;
-        exitCode = code;
+    if (!_stopped) {
+        _stopped = true;
+        _exitCode = code;
         onStop(code);
     }
 }
@@ -101,26 +79,28 @@ void Scene::processEvents () {
                 break;
             }
 
+            case SDL_VIDEORESIZE: {
+                handleResize(event.resize.w, event.resize.h);
+                break;
+            }
+
             /* Keyboard Event */
             case SDL_KEYDOWN:
             case SDL_KEYUP: {
-                SDL_KeyboardEvent keyEvent = event.key;
-
-                KeyEvent key;
-                key.code = keyEvent.keysym.sym;
+                int code = event.key.keysym.sym;
 
                 // Resize the keys array
-                if (keysPressed.size() < key.code+1) {
-                    keysPressed.resize(key.code+1);
+                if (_keysPressed.size() < code+1) {
+                    _keysPressed.resize(code+1);
                 }
 
                 // Call the event method
                 if (event.type == SDL_KEYDOWN) {
-                    keysPressed[key.code] = true;
-                    onKeyDown(key);
+                    _keysPressed[code] = true;
+                    onKeyDown(code);
                 } else if (event.type == SDL_KEYUP) {
-                    keysPressed[key.code] = false;
-                    onKeyUp(key);
+                    _keysPressed[code] = false;
+                    onKeyUp(code);
                 }
 
                 break;
@@ -129,10 +109,63 @@ void Scene::processEvents () {
     }
 }
 
-bool Scene::isKeyPressed (Uint32 code) {
-    if (keysPressed.size() < code+1) {
+bool Scene::isKeyPressed (int code) {
+    if (_keysPressed.size() < code+1) {
         return false;
     }
 
-    return keysPressed[code];
+    return _keysPressed[code];
+}
+
+void Scene::resize (int width, int height) {
+    handleResize(width, height);
+}
+
+void Scene::handleResize (int width, int height) {
+    // Resize the OpenGL Viewport
+    SDL_SetVideoMode(width, height, 32, SDL_OPENGL|SDL_RESIZABLE);
+    glViewport(0.0f, 0.0f, width, height);
+
+    // Keep the zoom, change the aspect
+    resetOrtho();
+
+    // Update the local fields
+    _width = width;
+    _height = height;
+
+    // Event
+    onResize(width, height);
+}
+
+void Scene::resetOrtho () {
+    double zmult = 0.5 / exp(_zoom);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(
+        _x - _width * zmult, _x + _width * zmult,
+        _y - _height * zmult, _height * zmult
+    );
+}
+
+void Scene::zoomTo (double zoom) {
+    _zoom = zoom;
+    resetOrtho();
+}
+
+void Scene::zoom (double zoom) {
+    _zoom += zoom;
+    resetOrtho();
+}
+
+void Scene::moveTo (double x, double y) {
+    _x = x;
+    _y = y;
+    resetOrtho();
+}
+
+void Scene::move (double x, double y) {
+    _x += x;
+    _y += y;
+    resetOrtho();
 }

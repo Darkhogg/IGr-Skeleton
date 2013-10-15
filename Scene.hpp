@@ -51,9 +51,9 @@ class Scene {
         void moveTo (double x, double y);
         void move (double x, double y);
 
-        void zoom () { return _zoom; }
-        void x () { return _x; }
-        void y () { return _y; }
+        double zoom () { return _zoom; }
+        double x () { return _x; }
+        double y () { return _y; }
 
 
     public:

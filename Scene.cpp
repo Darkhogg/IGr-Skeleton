@@ -138,13 +138,15 @@ void Scene::handleResize (int width, int height) {
 }
 
 void Scene::resetOrtho () {
+    printf("%f, %f : %f\r", _x, _y, _zoom);
+    fflush(stdout);
     double zmult = 0.5 / exp(_zoom);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluOrtho2D(
-        _x - _width * zmult, _x + _width * zmult,
-        _y - _height * zmult, _height * zmult
+        - _width * zmult + _x, _width * zmult + _x,
+        - _height * zmult + _y, _height * zmult + _y
     );
 }
 
@@ -165,7 +167,7 @@ void Scene::moveTo (double x, double y) {
 }
 
 void Scene::move (double x, double y) {
-    _x += x;
-    _y += y;
+    _x += x / exp(_zoom);
+    _y += y / exp(_zoom);
     resetOrtho();
 }

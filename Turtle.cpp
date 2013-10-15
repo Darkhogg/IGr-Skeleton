@@ -1,19 +1,16 @@
 #include "Turtle.hpp"
 
-#include <math.h>
-
 void Turtle::advance (GLdouble dist) {
-    x += dist * cos(ang);
-    y += dist * sin(ang);
+    pos(x() + dist * cos(ang()), y() + dist * sin(ang()));
 }
 
 void Turtle::rotate (GLdouble angle) {
-    ang += angle;
-    // TODO clamp betweet 0 and 2*PI
+    ang(ang() + angle);
 }
 
 void Turtle::lookAt (GLdouble atX, GLdouble atY) {
-    ang = atan2(atY - y, atX - x);
+    GLdouble angle = atan2(atY - y(), atX - x());
+    ang(angle);
 }
 
 void Turtle::moveTo (GLdouble x, GLdouble y) {

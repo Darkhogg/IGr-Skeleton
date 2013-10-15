@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <iostream>
 
 /* SDL and OpenGL */
 #include <GL/glu.h>

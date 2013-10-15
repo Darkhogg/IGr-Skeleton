@@ -13,7 +13,7 @@ else
 endif
 
 # object files have corresponding source files
-OBJS= Scene.o
+OBJS= Scene.o Turtle.o
 CXX=g++
 COMPILER_FLAGS= -g
 INCLUDE= $(SDL_INC) $(OPENGL_INC)

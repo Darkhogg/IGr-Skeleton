@@ -16,6 +16,8 @@ class Turtle {
 
     public:
         Turtle () : _x(0.0), _y(0.0), _ang(0.0) {}
+        Turtle (GLdouble x, GLdouble y) : _x(x), _y(y), _ang(0.0) {}
+        Turtle (GLdouble x, GLdouble y, GLdouble ang) : _x(x), _y(y), _ang(ang) {}
         ~Turtle () {}
 
         // ===============

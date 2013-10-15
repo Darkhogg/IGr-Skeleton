@@ -29,6 +29,9 @@ void Scene::initialize () {
 
     resize(_width, _height);
 
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
     onInitialize();
 }
 
@@ -138,8 +141,6 @@ void Scene::handleResize (int width, int height) {
 }
 
 void Scene::resetOrtho () {
-    printf("%f, %f : %f\r", _x, _y, _zoom);
-    fflush(stdout);
     double zmult = 0.5 / exp(_zoom);
 
     glMatrixMode(GL_PROJECTION);

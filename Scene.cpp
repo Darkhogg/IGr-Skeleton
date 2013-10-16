@@ -6,6 +6,8 @@
 
 #include <math.h>
 
+#include <iostream>
+
 void Scene::abort (std::string message) {
     fprintf(stderr, "%s [%s]\n", message.c_str(), SDL_GetError());
     exit(1);
@@ -65,6 +67,8 @@ void Scene::stop (int code) {
 void Scene::update (float delta) {
     processEvents();
     onUpdate(delta);
+
+    resetOrtho();
 }
 
 void Scene::draw () {
@@ -83,6 +87,7 @@ void Scene::processEvents () {
             }
 
             case SDL_VIDEORESIZE: {
+                std::cout << event.resize.w << ", " << event.resize.h << std::endl;
                 handleResize(event.resize.w, event.resize.h);
                 break;
             }

@@ -30,7 +30,7 @@ void Scene::initialize () {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     resize(_width, _height);
-    configScreen(2, 2);
+    configScreen(1, 1);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();

@@ -2,6 +2,7 @@
 #include "GL/glu.h"
 
 #include "keys.h"
+#include "types.h"
 
 #include "Scene.hpp"
 #include "Turtle.hpp"

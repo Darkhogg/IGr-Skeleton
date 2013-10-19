@@ -30,6 +30,7 @@ void Scene::initialize () {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     resize(_width, _height);
+    configScreen(2, 2);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -67,12 +68,29 @@ void Scene::stop (int code) {
 void Scene::update (float delta) {
     processEvents();
     onUpdate(delta);
-
-    resetOrtho();
 }
 
 void Scene::draw () {
-    onDraw();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    for (std::vector<Camera2D>::iterator cam = _cameras.begin(); cam != _cameras.end(); ++cam) {
+        // Viewport
+        Quad vp = cam->vp();
+        glViewport(
+            _width*vp.left,
+            _height*vp.top,
+            _width*(vp.right-vp.left), 
+            _height*(vp.bottom-vp.top)
+        );
+
+        // Projection
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+
+        Quad view = cam->view(_width, _height);
+        gluOrtho2D(view.left, view.right, view.bottom, view.top);
+
+        onDraw();
+    }
     SDL_GL_SwapBuffers();
 }
 
@@ -87,7 +105,6 @@ void Scene::processEvents () {
             }
 
             case SDL_VIDEORESIZE: {
-                std::cout << event.resize.w << ", " << event.resize.h << std::endl;
                 handleResize(event.resize.w, event.resize.h);
                 break;
             }
@@ -113,6 +130,28 @@ void Scene::processEvents () {
 
                 break;
             }
+
+            /* Mouse Event */
+            case SDL_MOUSEBUTTONDOWN:
+            case SDL_MOUSEBUTTONUP: {
+                int btn = event.button.button;
+
+                // Resize the keys array
+                if (_mousePressed.size() < btn+1) {
+                    _mousePressed.resize(btn+1);
+                }
+
+                // Call the event method
+                if (event.type == SDL_MOUSEBUTTONDOWN) {
+                    _mousePressed[btn] = true;
+                    onMouseDown(btn);
+                } else if (event.type == SDL_MOUSEBUTTONUP) {
+                    _mousePressed[btn] = false;
+                    onMouseUp(btn);
+                }
+
+                break;
+            }
         }
     }
 }
@@ -132,10 +171,6 @@ void Scene::resize (int width, int height) {
 void Scene::handleResize (int width, int height) {
     // Resize the OpenGL Viewport
     SDL_SetVideoMode(width, height, 32, SDL_OPENGL|SDL_RESIZABLE);
-    glViewport(0.0f, 0.0f, width, height);
-
-    // Keep the zoom, change the aspect
-    resetOrtho();
 
     // Update the local fields
     _width = width;
@@ -145,35 +180,45 @@ void Scene::handleResize (int width, int height) {
     onResize(width, height);
 }
 
-void Scene::resetOrtho () {
-    double zmult = 0.5 / exp(_zoom);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(
-        - _width * zmult + _x, _width * zmult + _x,
-        - _height * zmult + _y, _height * zmult + _y
-    );
-}
-
 void Scene::zoomTo (double zoom) {
-    _zoom = zoom;
-    resetOrtho();
+    _cameras[_cam].zoom(zoom);
 }
 
 void Scene::zoom (double zoom) {
-    _zoom += zoom;
-    resetOrtho();
+    _cameras[_cam].zoom(_cameras[_cam].zoom() + zoom);
 }
 
 void Scene::moveTo (double x, double y) {
-    _x = x;
-    _y = y;
-    resetOrtho();
+    _cameras[_cam].pos(Point2D(x, y));
 }
 
 void Scene::move (double x, double y) {
-    _x += x / exp(_zoom);
-    _y += y / exp(_zoom);
-    resetOrtho();
+    _cameras[_cam].pos(Point2D(
+        _cameras[_cam].pos().x + x / exp(_cameras[_cam].zoom()),
+        _cameras[_cam].pos().y + y / exp(_cameras[_cam].zoom())
+    ));
+}
+
+void Scene::configScreen (int rows, int cols) {
+    _cameras.clear();
+
+    GLdouble w = 1.0 / cols;
+    GLdouble h = 1.0 / rows;
+
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            Quad vp;
+            vp.left = c*w;
+            vp.right = (c+1)*w;
+            vp.top = r*h;
+            vp.bottom = (r+1)*h;
+
+            Camera2D cam;
+            cam.vp(vp);
+
+            _cameras.push_back(cam);
+        }
+    }
+
+    _cam = 0;
 }

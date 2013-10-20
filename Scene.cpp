@@ -77,9 +77,9 @@ void Scene::draw () {
         Quad vp = cam->vp();
         glViewport(
             _width*vp.left,
-            _height*vp.top,
+            _height - (_height*vp.top),
             _width*(vp.right-vp.left), 
-            _height*(vp.bottom-vp.top)
+            _height*(vp.top-vp.bottom)
         );
 
         // Projection
@@ -127,6 +127,17 @@ void Scene::processEvents () {
                     _keysPressed[code] = false;
                     onKeyUp(code);
                 }
+
+                break;
+            }
+
+            case SDL_MOUSEMOTION: {
+                _mouseX = event.motion.x;
+                _mouseY = event.motion.y;
+
+                findCurrentCamera();
+
+                onMouseMove(_mouseX, _mouseY);
 
                 break;
             }
@@ -210,8 +221,8 @@ void Scene::configScreen (int rows, int cols) {
             Quad vp;
             vp.left = c*w;
             vp.right = (c+1)*w;
-            vp.top = r*h;
-            vp.bottom = (r+1)*h;
+            vp.bottom = r*h;
+            vp.top = (r+1)*h;
 
             Camera2D cam;
             cam.vp(vp);
@@ -220,5 +231,40 @@ void Scene::configScreen (int rows, int cols) {
         }
     }
 
-    _cam = 0;
+    findCurrentCamera();
+}
+
+void Scene::findCurrentCamera () {
+    double xr = (double) _mouseX / _width;
+    double yr = (double) _mouseY / _height;
+
+    for (int i = 0; i < _cameras.size(); i++) {
+        Quad vp = _cameras[i].vp();
+        if (xr >= vp.left && xr < vp.right && yr >= vp.bottom && yr < vp.top) {
+            _cam = i;
+        }
+    }
+}
+
+Point2D Scene::getMouseWorldPosition () {
+    Quad vp = cam().vp();
+    Quad view = cam().view(_width, _height);
+
+    /* Normalized mouse position */
+    Point2D mr (
+        (double) _mouseX / _width,
+        (double) _mouseY / _height);
+
+    /* Within-camera mouse position */
+    Point2D cmp (
+        (mr.x - vp.left) / (vp.right - vp.left),
+        (mr.y - vp.top) / (vp.bottom - vp.top));
+
+    Point2D mwp (
+        view.left + cmp.x*(view.right-view.left),
+        view.bottom + cmp.y*(view.top-view.bottom));
+
+    printf("%f, %f\r", mwp.x, mwp.y);
+    fflush(stdout);
+    return mwp;
 }

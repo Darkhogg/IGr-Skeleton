@@ -86,7 +86,7 @@ void Scene::draw () {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
 
-        Quad view = cam->view(_width, _height);
+        Quad view = cam->view(_width/_camCols, _height/_camRows);
         gluOrtho2D(view.left, view.right, view.bottom, view.top);
 
         onDraw();
@@ -211,6 +211,9 @@ void Scene::move (double x, double y) {
 }
 
 void Scene::configScreen (int rows, int cols) {
+    _camRows = rows;
+    _camCols = cols;
+
     _cameras.clear();
 
     GLdouble w = 1.0 / cols;
@@ -248,7 +251,7 @@ void Scene::findCurrentCamera () {
 
 Point2D Scene::getMouseWorldPosition () {
     Quad vp = cam().vp();
-    Quad view = cam().view(_width, _height);
+    Quad view = cam().view(_width/_camCols, _height/_camRows);
 
     /* Normalized mouse position */
     Point2D mr (

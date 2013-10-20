@@ -24,7 +24,7 @@ class Scene {
         std::vector<bool> _mousePressed;
 
         std::vector<Camera2D> _cameras;
-        int _cam;
+        int _cam, _camCols, _camRows;
 
         void abort (std::string message);
         void initialize ();
@@ -52,7 +52,7 @@ class Scene {
         void stop (int code);
         bool isKeyPressed (int code);
         bool isMousePressed (int button);
-        
+
         Point2D getMouseScreenPosition () {return Point2D(_mouseX, _mouseY);}
         Point2D getMouseWorldPosition ();
 

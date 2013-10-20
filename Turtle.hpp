@@ -25,7 +25,7 @@ class Turtle {
         
         GLdouble x () { return _x; }
         GLdouble y () { return _y; }
-        GLdouble ang () { return _ang }
+        GLdouble ang () { return _ang; }
 
         // ===============
         // === SETTERS ===

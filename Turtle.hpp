@@ -25,7 +25,7 @@ class Turtle {
         
         GLdouble x () { return _x; }
         GLdouble y () { return _y; }
-        GLdouble ang () { return fmod(fmod(_ang, 2*M_PI) + 2*M_PI, 2*M_PI); }
+        GLdouble ang () { return _ang }
 
         // ===============
         // === SETTERS ===
@@ -33,7 +33,7 @@ class Turtle {
         void x (GLdouble x) { _x = x; }
         void y (GLdouble y) { _y = y; }
         void pos (GLdouble nx, GLdouble ny) { x(nx); y(ny); }
-        void ang (GLdouble angle) { _ang = fmod(angle, 2*M_PI); }
+        void ang (GLdouble angle) { _ang = fmod(fmod(angle, 2*M_PI) + 2*M_PI, 2*M_PI); }
 
         // ==============
         // === MOVING ===

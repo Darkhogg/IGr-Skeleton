@@ -229,6 +229,7 @@ void Scene::configScreen (int rows, int cols) {
 
             Camera2D cam;
             cam.vp(vp);
+            cam.zoom(log(1.0/std::max(rows, cols)));
 
             _cameras.push_back(cam);
         }

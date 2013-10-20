@@ -138,7 +138,7 @@
 #define KEY_EURO SDLK_EURO
 
 #define MOUSE_LEFT (1)
-#define MOUSE_RIGHT (2)
-#define MOUSE_CENTER (3)
+#define MOUSE_CENTER (2)
+#define MOUSE_RIGHT (3)
 
 #endif

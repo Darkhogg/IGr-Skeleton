@@ -264,7 +264,5 @@ Point2D Scene::getMouseWorldPosition () {
         view.left + cmp.x*(view.right-view.left),
         view.bottom + cmp.y*(view.top-view.bottom));
 
-    printf("%f, %f\r", mwp.x, mwp.y);
-    fflush(stdout);
     return mwp;
 }

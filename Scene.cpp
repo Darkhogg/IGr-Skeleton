@@ -4,7 +4,8 @@
 #include <GL/glu.h>
 #include <GL/glx.h>
 
-#include <math.h>
+#include <cmath>
+#include <ctime>
 
 #include <iostream>
 
@@ -41,11 +42,16 @@ void Scene::initialize () {
 int Scene::run () {
     initialize();
 
+    Uint32 oldt = SDL_GetTicks();
+    int lasted = 1;
+
     while (!_stopped) {
-        update(1.0f / 60.0f);
+        update(1000.0f / lasted);
         draw();
 
-        //usleep(1000000 / 60);
+        Uint32 newt = SDL_GetTicks();
+        lasted = newt-oldt;
+        oldt = newt;
     }
 
     return _exitCode;

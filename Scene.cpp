@@ -46,7 +46,7 @@ int Scene::run () {
     int lasted = 1;
 
     while (!_stopped) {
-        update(1000.0f / lasted);
+        update(lasted / 1000.0f);
         draw();
 
         Uint32 newt = SDL_GetTicks();

@@ -13,9 +13,10 @@ else
 endif
 
 # object files have corresponding source files
-OBJS= Scene.o Turtle.o Camera2D.o
+OBJS= Scene.o Turtle.o Camera2D.o Vect.o
+OPT?=1
 CXX=g++
-COMPILER_FLAGS= -g
+COMPILER_FLAGS= -g -std=c++11 -O$(OPT)
 INCLUDE= $(SDL_INC) $(OPENGL_INC)
 LIBS= $(SDL_LIB) $(OPENGL_LIB)
 

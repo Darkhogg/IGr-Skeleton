@@ -14,9 +14,11 @@ endif
 
 # object files have corresponding source files
 OBJS= Scene.o Turtle.o Camera2D.o Vect.o
-OPT?=1
 CXX=g++
-COMPILER_FLAGS= -g -std=c++11 -O$(OPT)
+ifeq ($(MODE), prod)
+	EXTRA_FLAGS= -O3 -funroll-loops
+endif
+COMPILER_FLAGS= -g -std=c++11 $(EXTRA_FLAGS)
 INCLUDE= $(SDL_INC) $(OPENGL_INC)
 LIBS= $(SDL_LIB) $(OPENGL_LIB)
 

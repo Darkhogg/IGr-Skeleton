@@ -3,15 +3,6 @@
 
 #include <GL/glx.h>
 
-struct Point2D {
-    GLdouble x;
-    GLdouble y;
-
-    Point2D () : x(0), y(0) {}
-    Point2D (GLdouble x, GLdouble y)
-        : x(x), y(y) {}
-};
-
 struct Quad {
     GLdouble left;
     GLdouble right;

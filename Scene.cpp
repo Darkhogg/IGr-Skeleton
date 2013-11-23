@@ -30,8 +30,8 @@ void Scene::initialize () {
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,   24);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    resize(_width, _height);
     configScreen(1, 1);
+    resize(_width, _height);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -46,7 +46,13 @@ int Scene::run () {
     int lasted = 1;
 
     while (!_stopped) {
-        update(lasted / 1000.0f);
+        processEvents();
+        if (!_paused) {
+            update(lasted / 1000.0f);
+        } else if (_nextTick > 0.0001f) {
+            update(_nextTick);
+            _nextTick = 0;
+        }
         draw();
 
         Uint32 newt = SDL_GetTicks();
@@ -72,7 +78,6 @@ void Scene::stop (int code) {
 }
 
 void Scene::update (float delta) {
-    processEvents();
     onUpdate(delta);
 }
 
@@ -206,13 +211,13 @@ void Scene::zoom (double zoom) {
 }
 
 void Scene::moveTo (double x, double y) {
-    _cameras[_cam].pos(Point2D(x, y));
+    _cameras[_cam].pos(Vect(x, y));
 }
 
 void Scene::move (double x, double y) {
-    _cameras[_cam].pos(Point2D(
-        _cameras[_cam].pos().x + x / exp(_cameras[_cam].zoom()),
-        _cameras[_cam].pos().y + y / exp(_cameras[_cam].zoom())
+    _cameras[_cam].pos(Vect(
+        _cameras[_cam].pos().x() + x / exp(_cameras[_cam].zoom()),
+        _cameras[_cam].pos().y() + y / exp(_cameras[_cam].zoom())
     ));
 }
 
@@ -256,23 +261,23 @@ void Scene::findCurrentCamera () {
     }
 }
 
-Point2D Scene::getMouseWorldPosition () {
+Vect Scene::getMouseWorldPosition () {
     Quad vp = cam().vp();
     Quad view = cam().view(_width/_camCols, _height/_camRows);
 
     /* Normalized mouse position */
-    Point2D mr (
+    Vect mr (
         (double) _mouseX / _width,
         (double) _mouseY / _height);
 
     /* Within-camera mouse position */
-    Point2D cmp (
-        (mr.x - vp.left) / (vp.right - vp.left),
-        (mr.y - vp.top) / (vp.bottom - vp.top));
+    Vect cmp (
+        (mr.x() - vp.left) / (vp.right - vp.left),
+        (mr.y() - vp.top) / (vp.bottom - vp.top));
 
-    Point2D mwp (
-        view.left + cmp.x*(view.right-view.left),
-        view.bottom + cmp.y*(view.top-view.bottom));
+    Vect mwp (
+        view.left + cmp.x()*(view.right-view.left),
+        view.bottom + cmp.y()*(view.top-view.bottom));
 
     return mwp;
 }

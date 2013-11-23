@@ -4,6 +4,8 @@
 #include <SDL.h>
 #include <GL/glx.h>
 
+#include <iostream>
+
 class Vect {
     public: 
         typedef GLdouble Component;
@@ -27,16 +29,29 @@ class Vect {
         void y (Vect::Component y) {_y = y;}
         void z (Vect::Component z) {_z = z;}
 
-        Vect& operator+= (Vect other);
-        Vect& operator-= (Vect other);
-        Vect& operator*= (Vect::Component scale);
-        Vect& operator/= (Vect::Component scale);
+        Vect& operator+= (const Vect& other);
+        Vect& operator-= (const Vect& other);
+        Vect& operator*= (const Vect::Component& scale);
+        Vect& operator/= (const Vect::Component& scale);
+        Vect operator- () { return Vect(-_x, -_y, -_z); }
 
         Vect::Component mod_sqr () const;
         Vect::Component mod () const;
 
         Vect::Component pitch () const;
         Vect::Component yaw () const;
+
+        Vect::Component dot (const Vect& other) const {
+            return _x*other._x + _y*other._y + _z*other._z;
+        }
+
+        Vect normalized () const;
+
+        Vect project (const Vect& other);
+
+        // Only for 2D vectors!
+        Vect perp_left_z0 () const;
+        Vect perp_right_z0 () const;
 };
 
 inline Vect operator+ (Vect v1, Vect v2) {
@@ -57,6 +72,12 @@ inline Vect operator* (Vect v, Vect::Component k) {
 inline Vect operator/ (Vect v, Vect::Component k) {
     v /= k;
     return v;
+}
+
+
+inline std::ostream& operator<<(std::ostream& os, const Vect& v) {
+    os << "(" << v.x() << ", " << v.y() << ", " << v.z() << ")";
+    return os;
 }
 
 #endif

@@ -8,9 +8,9 @@ Quad Camera2D::view (int width, int height) {
     double zmult = 0.5 / exp(_zoom);
 
     return Quad(
-        -width * zmult + _pos.x,
-        width * zmult + _pos.x,
-        -height * zmult + _pos.y,
-        height * zmult + _pos.y
+        -width * zmult + _pos.x(),
+        width * zmult + _pos.x(),
+        -height * zmult + _pos.y(),
+        height * zmult + _pos.y()
     );
 }

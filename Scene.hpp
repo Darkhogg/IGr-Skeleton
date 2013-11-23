@@ -2,6 +2,8 @@
 #define __SCENE__H__
 
 #include "Camera2D.hpp"
+#include "Vect.hpp"
+#include "types.h"
 
 #include <SDL.h>
 #include <vector>
@@ -14,8 +16,9 @@ typedef struct {
 
 class Scene {
     private:
-        bool _stopped;
+        bool _stopped, _paused;
         int _exitCode;
+        float _nextTick = 0;
 
         int _width, _height;
         int _mouseX, _mouseY;
@@ -50,19 +53,34 @@ class Scene {
 
         void quit ();
         void stop (int code);
+
+        void pause () { _paused = true; }
+        void resume () { _paused = false; }
+
+        void tick (float delta) { _nextTick = delta; }
+
+        bool isPaused () { return _paused; }
+
         bool isKeyPressed (int code);
         bool isMousePressed (int button);
 
-        Point2D getMouseScreenPosition () {return Point2D(_mouseX, _mouseY);}
-        Point2D getMouseWorldPosition ();
+        Vect getMouseScreenPosition () {return Vect(_mouseX, _mouseY);}
+        Vect getMouseWorldPosition ();
 
         void resize (int width, int height);
+
+        int width () { return _width; }
+        int height () { return _height; }
 
         void zoomTo (double zoom);
         void zoom (double zoom);
 
         void moveTo (double x, double y);
         void move (double x, double y);
+
+        void setTitle (std::string title) {
+            SDL_WM_SetCaption(title.c_str(), 0); 
+        }
 
         Camera2D cam () { return _cameras[_cam]; }
 

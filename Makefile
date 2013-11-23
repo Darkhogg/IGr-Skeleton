@@ -17,8 +17,10 @@ OBJS= Scene.o Turtle.o Camera2D.o Vect.o
 CXX=g++
 ifeq ($(MODE), prod)
 	EXTRA_FLAGS= -O3 -funroll-loops
+else
+	EXTRA_FLAGS= -g
 endif
-COMPILER_FLAGS= -g -std=c++11 $(EXTRA_FLAGS)
+COMPILER_FLAGS= -std=c++11 $(EXTRA_FLAGS)
 INCLUDE= $(SDL_INC) $(OPENGL_INC)
 LIBS= $(SDL_LIB) $(OPENGL_LIB)
 

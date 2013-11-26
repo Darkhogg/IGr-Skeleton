@@ -1,3 +1,6 @@
+/**
+ * @author Daniel Escoz Solana
+ */
 #include "Vect.hpp"
 
 #include <cmath>

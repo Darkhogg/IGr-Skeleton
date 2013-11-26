@@ -1,3 +1,6 @@
+/**
+ * @author Daniel Escoz Solana
+ */
 #ifndef __TURTLE__H__
 #define __TURTLE__H__
 

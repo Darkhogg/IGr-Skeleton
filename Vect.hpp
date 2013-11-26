@@ -1,3 +1,6 @@
+/**
+ * @author Daniel Escoz Solana
+ */
 #ifndef __VECT__H__
 #define __VECT__H__
 

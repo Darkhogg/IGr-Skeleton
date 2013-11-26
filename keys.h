@@ -1,3 +1,6 @@
+/**
+ * @author Daniel Escoz Solana
+ */
 #ifndef __KEYS__H__
 #define __KEYS__H__
 

@@ -1,3 +1,6 @@
+/**
+ * @author Daniel Escoz Solana
+ */
 #ifndef __SCENE__H__
 #define __SCENE__H__
 

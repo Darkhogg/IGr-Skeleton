@@ -1,3 +1,6 @@
+/**
+ * @author Daniel Escoz Solana
+ */
 #include "Camera2D.hpp"
 
 #include <cmath>

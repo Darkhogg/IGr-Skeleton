@@ -1,3 +1,6 @@
+/**
+ * @author Daniel Escoz Solana
+ */
 #include "GL/glx.h"
 #include "GL/glu.h"
 

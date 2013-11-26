@@ -1,3 +1,6 @@
+/**
+ * @author Daniel Escoz Solana
+ */
 #include "Scene.hpp"
 
 /* SDL and OpenGL */

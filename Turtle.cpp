@@ -1,3 +1,6 @@
+/**
+ * @author Daniel Escoz Solana
+ */
 #include "Turtle.hpp"
 
 void Turtle::advance (GLdouble dist) {

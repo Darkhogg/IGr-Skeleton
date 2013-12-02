@@ -30,8 +30,13 @@ void Scene::initialize () {
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,   8);
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,    8);
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE,   8);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,   24);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+
+    //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+    //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 
     configScreen(1, 1);
     resize(_width, _height);
@@ -61,6 +66,8 @@ int Scene::run () {
         Uint32 newt = SDL_GetTicks();
         lasted = newt-oldt;
         oldt = newt;
+
+        std::cout << lasted << " ms\033[K\r" << std::flush;
     }
 
     return _exitCode;

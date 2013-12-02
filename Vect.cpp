@@ -46,7 +46,7 @@ Vect::Component Vect::pitch () const {
 }
 
 Vect::Component Vect::yaw () const {
-    return atan2(_x, -_y);
+    return fmod(fmod(atan2(_x, -_y) - M_PI_2, 2*M_PI) + 2*M_PI, 2*M_PI);
 }
 
 Vect Vect::normalized () const {

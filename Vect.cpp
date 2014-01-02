@@ -9,6 +9,7 @@ Vect& Vect::operator+= (const Vect& other) {
     _x += other._x;
     _y += other._y;
     _z += other._z;
+    _w += other._w;
     return *this;
 }
 
@@ -16,6 +17,7 @@ Vect& Vect::operator-= (const Vect& other) {
     _x -= other._x;
     _y -= other._y;
     _z -= other._z;
+    _w -= other._w;
     return *this;
 }
 
@@ -23,6 +25,7 @@ Vect& Vect::operator*= (const Vect::Component& scale) {
     _x *= scale;
     _y *= scale;
     _z *= scale;
+    //_w *= scale;
     return *this;
 }
 
@@ -30,6 +33,7 @@ Vect& Vect::operator/= (const Vect::Component& scale) {
     _x /= scale;
     _y /= scale;
     _z /= scale;
+    //_w /= scale;
     return *this;
 }
 
@@ -51,15 +55,15 @@ Vect::Component Vect::yaw () const {
 
 Vect Vect::normalized () const {
     auto m = mod();
-    return Vect(_x/m, _y/m, _z/m);
+    return Vect(_x/m, _y/m, _z/m, _w);
 }
 
 Vect Vect::perp_left_z0 () const {
-    return Vect(-_y, _x);
+    return Vect(-_y, _x, _w);
 }
 
 Vect Vect::perp_right_z0 () const {
-    return Vect(_y, -_x);
+    return Vect(_y, -_x, _w);
 }
 
 Vect Vect::project (const Vect& v) {

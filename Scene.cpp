@@ -221,13 +221,14 @@ void Scene::zoom (double zoom) {
 }
 
 void Scene::moveTo (double x, double y) {
-    _cameras[_cam].pos(Vect(x, y));
+    _cameras[_cam].pos(Vect(x, y, 1));
 }
 
 void Scene::move (double x, double y) {
     _cameras[_cam].pos(Vect(
         _cameras[_cam].pos().x() + x / exp(_cameras[_cam].zoom()),
-        _cameras[_cam].pos().y() + y / exp(_cameras[_cam].zoom())
+        _cameras[_cam].pos().y() + y / exp(_cameras[_cam].zoom()),
+        1
     ));
 }
 
@@ -278,16 +279,16 @@ Vect Scene::getMouseWorldPosition () {
     /* Normalized mouse position */
     Vect mr (
         (double) _mouseX / _width,
-        (double) _mouseY / _height);
+        (double) _mouseY / _height, 1.f);
 
     /* Within-camera mouse position */
     Vect cmp (
         (mr.x() - vp.left) / (vp.right - vp.left),
-        (mr.y() - vp.top) / (vp.bottom - vp.top));
+        (mr.y() - vp.top) / (vp.bottom - vp.top), 1.f);
 
     Vect mwp (
         view.left + cmp.x()*(view.right-view.left),
-        view.bottom + cmp.y()*(view.top-view.bottom));
+        view.bottom + cmp.y()*(view.top-view.bottom), 1.f);
 
     return mwp;
 }

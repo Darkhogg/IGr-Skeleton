@@ -9,7 +9,7 @@ else
 	OPENGL_INC= -I/usr/X11R6/include
 	OPENGL_LIB= -I/usr/lib64 -lGL -lGLU
 	SDL_INC= `sdl-config --cflags`
-	SDL_LIB= `sdl-config --libs`
+	SDL_LIB= `sdl-config --libs` -lSDL_image
 endif
 
 # object files have corresponding source files

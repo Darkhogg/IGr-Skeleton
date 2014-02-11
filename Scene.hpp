@@ -9,6 +9,7 @@
 #include "types.h"
 
 #include <SDL.h>
+#include <SDL_image.h>
 #include <vector>
 #include <string>
 

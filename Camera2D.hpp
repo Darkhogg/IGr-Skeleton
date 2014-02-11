@@ -14,7 +14,7 @@ class Camera2D {
         Quad _vp;
 
     public:
-        Camera2D () : _pos(0, 0), _zoom(0), _vp(0, 0, 0, 0) {}
+        Camera2D () : _pos(0.f, 0.f, 1.f), _zoom(0), _vp(0, 0, 0, 0) {}
         ~Camera2D () {}
 
         Vect pos () {return _pos;}

@@ -2,7 +2,6 @@
  * @author Daniel Escoz Solana
  */
 
-// OpenGL thingies
 #define GL_GLEXT_PROTOTYPES
 #include <GL/gl.h>
 #include <GL/glu.h>

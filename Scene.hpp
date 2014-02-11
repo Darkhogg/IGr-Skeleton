@@ -68,7 +68,7 @@ class Scene {
         bool isKeyPressed (int code);
         bool isMousePressed (int button);
 
-        Vect getMouseScreenPosition () {return Vect(_mouseX, _mouseY);}
+        Vect getMouseScreenPosition () {return Vect(_mouseX, _mouseY, 1);}
         Vect getMouseWorldPosition ();
 
         void resize (int width, int height);

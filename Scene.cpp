@@ -67,7 +67,7 @@ int Scene::run () {
         lasted = newt-oldt;
         oldt = newt;
 
-        std::cout << lasted << " ms\033[K\r" << std::flush;
+        std::cerr << lasted << " ms\033[K\r" << std::flush;
     }
 
     return _exitCode;
